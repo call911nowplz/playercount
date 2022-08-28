@@ -32,7 +32,10 @@ var PlayerCounter = function () {
       throw TypeError('element cannot be null or undefined');
     }
 
-    this.ip = ip;
+    var ipAddress = ip.split(':');
+    this.ip = ipAddress[0];
+    this.port = ipAddress[1] || '25565';
+
     this.format = format;
     this.element = typeof element === 'string' ? document.querySelector(element) : element;
 
@@ -68,12 +71,12 @@ var PlayerCounter = function () {
           _this.element.innerHTML = _this.format.replace(FORMAT_REGEX, function (_, group) {
             return (
               // Change 'online' to 'now' to keep backward compatibility
-              response.players[group === 'online' ? 'now' : group]
+              response.players[group === 'online' ? 'online' : group]
             );
           });
         }
       };
-      request.open('GET', 'http://mcapi.us/server/status?ip=' + this.ip);
+      request.open('GET', 'https://api.mcstatus.io/v2/status/java/' + this.ip);
       request.send();
     }
   }]);
